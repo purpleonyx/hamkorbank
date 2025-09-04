@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать в АКБ Hamkorbank</title>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/icon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="description" content="Мы рады приветствовать вас в нашей команде! В Hamkorbank наши сотрудники — это основа всего, что мы делаем. Это отправная точка для знакомства с нашей культурой, ценностями и невероятным путешествием, которое мы проходим вместе.">
+    <meta name="author" content="Hamkorbank JSCB"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</head>
+<body>
+    <style>
+        #fixed_header {
+            background-color: #f8fafca8;
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind's gray-50 */
+        }
+
+        /* Initial animation states */
+        .initial-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Animation states for scroll-triggered elements */
+        .scroll-hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transition-delay: 0.2s;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .colhover {
+            transition: transform .2s;
+            -webkit-transition: all .2s;
+            -moz-transition: all .2s;
+        }
+
+        .colhover:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Custom delay for staggered animations */
+        .delay-200 { transition-delay: 200ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-600 { transition-delay: 600ms; }
+
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 40rem;
+            margin: auto;
+            padding: 1.5rem;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        
+        .modal-content.open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            text-align: right;
+        }
+
+        #closeModalBtn {
+            color: #a0aec0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        #closeModalBtn:hover {
+            color: #718096;
+        }
+        #closeModalBtn svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .modal-body {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .icon-container {
+            margin: 0 auto 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 3rem;
+            width: 3rem;
+            border-radius: 9999px;
+            background-color: #c6f6d5;
+        }
+        .icon-container svg {
+            height: 1.5rem;
+            width: 1.5rem;
+            color: #38a169;
+        }
+
+        .modal-body h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.5;
+            color: #1a202c;
+            margin: 0;
+        }
+
+        .modal-body p {
+            margin-top: 1rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            color: #718096;
+        }
+        
+        .modal-footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+
+        #closeModalFooterBtn {
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            color: white;
+            background-color: #18a755;
+            padding: 0.5rem 1.25rem;
+        }
+    </style>
+
+    <!-- HEADER -->
+    <header class="p-3 mb-3 border-bottom" id="fixed_header">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                    <svg class="bi me-2" width="160" height="32" role="img" aria-label="Hamkorbank">
+                        <use href="/images/logo_horizontal.svg"></use>
+                    </svg> </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
+
+                
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="/images/lang_icon_rus.svg" alt="mdo" width="32" height="32" class="rounded-circle"> </a>
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="/index.html">English</a></li>
+                        <li><a class="dropdown-item" href="#">O'zbek tili</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!--    ***********************
+            ***** HERO SECTION ****
+            *********************** -->
+    <div class="container px-4 pt-5 my-5 text-center border-bottom">
+        <div class="initial-hidden" id="hero-content">
+            <h1 class="display-4 fw-bold text-body-emphasis">Добро пожаловать в наш банк!</h1>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Мы рады приветствовать вас в нашей команде. В Hamkorbank мы убеждены, что наша главная ценность — это люди, которые составляют наш коллектив. 
+                    Ежедневно мы объединяем усилия, разделяя приверженность принципам честности, инноваций и высокого качества обслуживания — именно эти ценности стали основой нашего устойчивого развития и залогом успешного будущего.
+                </p>
+            </div>
+
+            <div class="overflow-hidden" style="max-height: 30vh;">
+                <div class="container px-5">
+                    <img src="/images/hero_img.jpg" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Hero Main Image of Hamkorbank JSCB" width="1000" height="500" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="container px-4 py-5 scroll-animation" id="custom-cards">
+        <h2 class="pb-2 border-bottom">Что сделать в первую очередь?</h2>
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+
+            <div class="col colhover">
+                <a href="https://www.youtube.com/watch?v=ROTx9DYn9DY" target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_vid.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Видео про Узбекистан</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto">
+                                <img src="/images/mini_icons_youtube.svg" alt="YouTube Icon" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>YouTube</small>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>UZB</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+
+            <div class="col colhover">
+                <a href="/Hamkorbank Info.pptx" download target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_ppt.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Презентация про наш банк</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto">
+                                <img src="/images/mini_icons_pptx.svg" alt="PowerPoint" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>PowerPoint</small>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>PPTX</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+
+            <div class="col colhover">
+                <a href="https://hamkorbank.uz/" target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_web.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Посетите наш веб-сайт</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto"> <img src="/images/mini_icons_web.svg" alt="Web Icon" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3"> <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>Hamkorbank</small>
+                            </li>
+                            <li class="d-flex align-items-center"> <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>Web</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="container px-4 py-5 scroll-animation" id="featured-3">
+        <h2 class="pb-2 border-bottom">По прибытию</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_pass.png" style="width: 2em;">
+                </div>
+                <h3 class="fs-2 text-body-emphasis">VISA</h3>
+                <p>Страны, для граждан которых в Республику Узбекистан установлен безвизовый режим, можно найти по ссылке (список в конце). ПЦР-тест, сертификат об исследовании антигена и сертификат о вакцинации не требуются.</p>
+                <a href="https://lex.uz/mact/513096" target="_blank" class="icon-link">Посмотреть список стран<svg class="bi" aria-hidden="true">
+                    <use xlink:href="#chevron-right"></use>
+                </svg> </a> 
+            </div>
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_reg.png" style="width: 2em;">
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Регистрация</h3>
+                <p>Иностранные граждане должны зарегистрироваться в течение 15 дней после прибытия в Узбекистан. Гостиницы: Регистрация обычно производится автоматически при заселении. 
+                    Уточните информацию у администратора. Апартаменты: Обратитесь за помощью к арендодателю, риелтору или специалисту по адаптации. Регистрация производится в местном 
+                    паспортном столе или отделении УВД по адресу проживания владельца недвижимости. Сохраните регистрационный документ — он может потребоваться при выезде из страны. 
+                    Временная регистрация обычно действительна в течение шести месяцев и может быть продлена.
+                </p>
+            </div>
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_imp.png" style="width: 2em;">
+                </div>
+                    <h3 class="fs-2 text-body-emphasis">Важно!</h3>
+                    <p>Если вы переезжаете из отеля в съёмную квартиру, вам необходимо зарегистрироваться в день выезда, чтобы избежать административного штрафа. 
+                        Обязательно заберите регистрационную форму в отеле и передайте её вместе с заполненной анкетой в паспортный стол. Та же процедура действует при регистрации по прибытии.
+                    </p>
+                </div>
+            </div>
+
+            <div class="feature col">
+                    <h3 class="fs-2 text-body-emphasis">Мобильная связь</h3>
+                    <p>Мы выдаём SIM-карту в первый рабочий день. Просто напомните об этом специалисту по адаптации и принесите телефон с IMEI. SIM-карта понадобится для получения PINFL и открытия банковской карты.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PINFL -->
+        <div class="container col-xxl-8 px-4 py-5 border-top border-bottom scroll-animation">
+            <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+                <div class="col-10 col-sm-8 col-lg-6">
+                    <img src="/images/pinfl_image.jpg" class="d-block mx-lg-auto img-fluid rounded" alt="ID Illustration Image" width="700" height="500" loading="lazy">
+                </div>
+                <div class="col-lg-6">
+                    <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Идентификация личности (PINFL) в Узбекистане</h1>
+                    <p class="lead">Ваш специалист по адаптации поможет вам получить PINFL (Персональный идентификационный номер физического лица). Вот краткий обзор процесса: для регистрации 
+                        в узбекской компании вам необходимо иметь PINFL. Этот уникальный идентификатор используется для подтверждения вашей личности в различных службах, включая государственные, 
+                        банковские и социальные. Важно: при получении PINFL внимательно проверьте правильность ввода ваших личных данных, таких как полное имя и дата рождения. В рамках процесса 
+                        вас сфотографируют и снимут отпечатки пальцев. Вам также сообщат, когда ваш PINFL будет готов к получению. Время обработки обычно составляет от 15–20 минут до одного рабочего дня, в зависимости от доступности системы.
+                    </p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a href="https://oldmy.gov.uz/en/pages/pini-foreign-persons?new=0" target="_blank" style="text-decoration: none;"><button type="button" class="btn btn-success btn-lg px-4 me-md-2">Подробнее про PINFL</button></a>
+                        <a href="https://my.gov.uz/en/for-foreigners" target="_blank" style="text-decoration: none;"><button type="button" class="btn btn-outline-secondary btn-lg px-4">Посетить MyGov.uz</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMEI -->
+        <div class="px-4 py-5 my-5 text-center scroll-animation">
+            <img class="d-block mx-auto mb-4" src="/images/logo_uzimei_lat_black.svg" alt="UZ IMEI Logo" width="250" height="auto">
+            <h3 class="fw-bold text-body-emphasis">Регистрация IMEI мобильного устройства</h3>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Иностранцам, посещающим Узбекистан и желающим использовать местную SIM-карту, необходимо зарегистрировать IMEI-код своего мобильного устройства. 
+                    Это часть национальной системы (UZIMEI), которая предотвращает кражу телефона и обеспечивает надлежащее использование мобильной сети. При использовании иностранной 
+                    SIM-карты (в роуминге) регистрация не требуется в течение 60 дней. Однако после установки местной SIM-карты телефон необходимо зарегистрировать, иначе он будет 
+                    заблокирован в сети по истечении короткого льготного периода.
+                </p>
+                <br>
+                <h4 class="text-start">Как зарегистрировать IMEI (для иностранцев)</h4>
+                <div class="text-start lead mb-4">
+                    <p><strong>1. Задекларируйте свой телефон на таможне при въезде в Узбекистан (особенно если он новый или превышает таможенную стоимость).</strong></p>
+                    <p><strong>2. Зарегистрируйте свое устройство одним из следующих способов:</strong></p>
+                    <ul>
+                        <li>Онлайн: <a class="link-opacity-50-hover link-offset-2 link-underline link-underline-opacity-25" href="https://uzimei.uz/en">uzimei.uz,</a> <a class="link-opacity-50-hover link-offset-2 link-underline link-underline-opacity-25" href="https://my.gov.uz/en/for-foreigners">my.gov.uz,</a> приложение Birda</li>
+                        <li>Лично: в аэропорту Ташкента, почтовые отделения, центры UZIMEI</li>
+                        <li>USSD/SMS: Наберите <em>*1170#</em> или отправьте SMS на 1170</li>
+                    </ul>
+                    <p><strong>3. Оплатите регистрационный взнос:</strong></p>
+                    <ul>
+                        <li>В течение 30 дней: <em>~82,400 UZS</em></li>
+                        <li>После 30 дней: <em>~103,000 UZS</em></li>
+                    </ul>
+                    <p><strong>4. При необходимости пройдите биометрическую верификацию.</strong></p>
+                    <p><strong>5. Срок оплаты: в течение 10 дней с момента подачи заявления.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARDS -->
+        <div class="container my-5 scroll-animation">
+            <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+                <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+                    <h1 class="display-4 fw-bold lh-1 text-body-emphasis">Банковские карты</h1>
+                    <br>
+                    <p class="lead">В Узбекистане доступны как местные банковские карты (Uzcard, Humo), так и международные карты (Visa, Mastercard).
+
+                        <br>Присоединяясь к нашей компании, вы получаете возможность открыть зарплатный счет в Hamkorbank. В рамках этого процесса вам будет оформлена зарплатная карта в национальной валюте (сум) — 
+                        Uzcard или Humo. При необходимости также предоставляется карта Visa в иностранной валюте (доллары США или евро). Для оформления счетов потребуется предоставить следующие документы:</p>
+                            <ul class="lead">
+                                <li>Действующий заграничный паспорт</li>
+                                <li>Временная регистрация в Узбекистане</li>
+                                <li>Местный номер телефона</li>
+                            </ul>
+                            <p class="lead">Предварительную информацию о пластиковых картах Hamkorbank вы можете найти в прикрепленном файле.</p>
+
+                            <p class="lead"><strong>Доступ к банкомату</p></strong>
+
+                            <p class="lead">Банкоматы в таких городах, как Ташкент и Андижан, обычно расположены в местах с большим скоплением людей, включая супермаркеты, автозаправочные станции и торговые центры.</p>
+
+                            <p class="lead">Обратите внимание на следующее:</p>
+
+                            <ul class="lead">
+                                <li>Не все банкоматы принимают все типы карт. Следуйте инструкциям на экране банкомата.</li>
+                                <li>Комиссия за снятие средств может взиматься в зависимости от типа вашей карты и банка-эмитента.</li>
+                            </ul>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                            <a href="/International Debit Cards.docx" download style="text-decoration: none;"><button type="button" class="btn btn-success btn-lg px-4 me-md-2 fw-bold">Загрузить полную информацию</button></a>
+                        </div>
+                    </div>
+                    <div style="filter: drop-shadow(0 0 1.2rem #7777777e);" class="col-lg-4 offset-lg-1 p-0 overflow-hidden">
+                        <img class="rounded-4" src="/images/6819965.jpg" alt="UzCard Debit Card" width="520">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last FEATURES -->
+             <div class="container px-4 py-5 scroll-animation" id="hanging-icons">
+                <h2 class="pb-2 border-bottom">Условия</h2>
+                <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-17.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">Где искать жилье?</h3>
+                            <p>В этом помогут HR</p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-18.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">Медицинские услуги</h3>
+                            <p>В случае необходимости медицинской помощи вы можете обратиться к врачу, работающему в банке, для консультации, либо самостоятельно посетить поликлинику по месту жительства. 
+                                Подробную информацию о порядке предоставления медицинских услуг иностранным гражданам в Республике Узбекистан вы найдете в приложенном файле.</p>
+                            <a href="/Medical Service.docx" download class="btn btn-success">Загрузить файл</a>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-19.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">На какой срок иностранцы могут ввозить свои автомобили в Узбекистан?</h3>
+                            <p>Иностранные граждане могут въехать на собственном автомобиле в Узбекистан без уплаты пошлин и налогов на срок до 90 дней в течение одного календарного года. При этом, его можно 
+                                использовать только в некоммерческих целях. По истечении 90-тодневного срока автомобиль должен быть вывезен за пределы страны.</p>
+                            <button id="openModalBtn" type="button" class="btn btn-success">Подробнее</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Modal -->
+            <div id="modal" class="modal-overlay hidden">
+                <!-- Modal content -->
+                <div id="modal-content" class="modal-content">
+                    <div class="modal-header">
+                        <!-- Close button -->
+                        <button id="closeModalBtn">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="icon-container">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h3>Ввоз иностранного транспортного средства в Узбекистан</h3>
+                        <p>
+                            Иностранным гражданам разрешается ввозить в Узбекистан личные транспортные средства без уплаты пошлин и налогов на срок до 90 дней в течение одного календарного года. Обратите внимание, что в течение этого срока транспортное средство может использоваться только в некоммерческих целях.<br>
+
+                            <br><strong>Продление более чем на 90 дней</strong>
+
+                            <br>Если вы хотите оставить свой автомобиль в Узбекистане сверх 90-дневного срока, вам необходимо подать заявление на продление. За продление взимается ежедневная плата, которая рассчитывается следующим образом:
+
+                            <br>0,7% от базовой расчетной величины (БРВ) на лошадиную силу транспортного средства в день.<br>
+
+                            <br>По текущему курсу БРВ составляет 330 000 сумов.
+                            <br>Например:
+
+                            <br>За автомобиль мощностью 100 лошадиных сил взимается сбор в размере:
+
+                            <br>231,000 UZS в день
+
+                            <br>6,930,000 UZS для 30 дней (примерно $560 USD)<br>
+
+                            <br><strong>Формула расчета платы:</strong>
+                            <br>Плата за продление = БРВ × 0,7% × Мощность автомобиля × Количество дней<br>
+
+
+                            <br><strong>Аренда автомобиля</strong>
+
+                            <br>Если вы предпочитаете не брать с собой автомобиль, вы можете арендовать его на месте. Стоимость аренды варьируется в зависимости от типа автомобиля и компании, но в среднем составляет от 400 до 1000 долларов в месяц.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeModalFooterBtn">
+                            Понятно
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate hero section on page load
+            const heroContent = document.getElementById('hero-content');
+            setTimeout(() => {
+                heroContent.classList.add('visible');
+            }, 100); // Small delay to ensure transition is applied
+
+            // Intersection Observer for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // No need to unobserve, let it stay animated
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            // Target all elements with the .scroll-animation class
+            const scrollElements = document.querySelectorAll('.scroll-animation');
+            scrollElements.forEach(el => {
+                el.classList.add('scroll-hidden');
+                observer.observe(el);
+            });
+        });
+
+
+        // Get the necessary elements from the DOM
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeModalFooterBtn = document.getElementById('closeModalFooterBtn');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+
+        // Function to open the modal with animation
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            // We use a timeout to allow the browser to render the modal first, then apply the animation class
+            setTimeout(() => {
+                modalContent.classList.add('open');
+            }, 10); // A small delay is enough
+        };
+
+        // Function to close the modal with animation
+        const closeModal = () => {
+            modalContent.classList.remove('open');
+             // Wait for the animation to finish before hiding the modal
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200); // Should match the transition duration in CSS
+        };
+        
+        // --- Event Listeners ---
+
+        // Open the modal when the main button is clicked
+        openModalBtn.addEventListener('click', openModal);
+
+        // Close the modal when the 'X' button is clicked
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Close the modal when the footer button is clicked
+        closeModalFooterBtn.addEventListener('click', closeModal);
+
+        // Close the modal if the user clicks on the background overlay
+        modal.addEventListener('click', (event) => {
+            // Check if the click was on the modal backdrop itself and not the content
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close the modal if the user presses the 'Escape' key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+
+<footer class="border-top">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center my-4">
+        <div class="col-md-4 d-flex align-items-center">
+            <a href="https://hamkorbank.uz/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" aria-label="Hamkorbank">
+                <svg class="bi" width="32" height="32" aria-hidden="true"><use href="/images/hb_logo_gray.svg"></use></svg>
+            </a>
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2025 Hamkorbank JSCB</span>
+        </div>
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="text-body-secondary" href="https://www.instagram.com/hamkorbank.uz/" aria-label="Instagram"><svg class="bi" width="32" height="32" aria-hidden="true"><use href="/images/social_inst.svg"></use></svg></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="https://www.facebook.com/Hamkorbank.uz/" aria-label="Facebook"><svg class="bi" width="32" height="32"><use href="/images/social_fb.svg"></use></svg></a></li>
+        </ul>
+    </div>
+</footer>
+
+</html>

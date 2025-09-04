@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Hamkorbank JSCB </title>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16x16.png">
+    <link rel="manifest" href="/icon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="description" content="We're excited to welcome you to the team! At Hamkorbank, our people are at the heart of everything we do. This is your starting point to learn about our culture, values, and the incredible journey we're on together.">
+    <meta name="author" content="Hamkorbank JSCB"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</head>
+<body>
+    <style>
+        #fixed_header {
+            background-color: #f8fafca8;
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind's gray-50 */
+        }
+
+        /* Initial animation states */
+        .initial-hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Animation states for scroll-triggered elements */
+        .scroll-hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transition-delay: 0.2s;
+        }
+        
+        .visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .colhover {
+            transition: transform .2s;
+            -webkit-transition: all .2s;
+            -moz-transition: all .2s;
+        }
+
+        .colhover:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Custom delay for staggered animations */
+        .delay-200 { transition-delay: 200ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-600 { transition-delay: 600ms; }
+
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 40rem;
+            margin: auto;
+            padding: 1.5rem;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        
+        .modal-content.open {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            text-align: right;
+        }
+
+        #closeModalBtn {
+            color: #a0aec0;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        #closeModalBtn:hover {
+            color: #718096;
+        }
+        #closeModalBtn svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .modal-body {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .icon-container {
+            margin: 0 auto 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 3rem;
+            width: 3rem;
+            border-radius: 9999px;
+            background-color: #c6f6d5;
+        }
+        .icon-container svg {
+            height: 1.5rem;
+            width: 1.5rem;
+            color: #38a169;
+        }
+
+        .modal-body h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.5;
+            color: #1a202c;
+            margin: 0;
+        }
+
+        .modal-body p {
+            margin-top: 1rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            color: #718096;
+        }
+        
+        .modal-footer {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+
+        #closeModalFooterBtn {
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.2s;
+            color: white;
+            background-color: #18a755;
+            padding: 0.5rem 1.25rem;
+        }
+    </style>
+
+    <!-- HEADER -->
+    <header class="p-3 mb-3 border-bottom" id="fixed_header">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                    <svg class="bi me-2" width="160" height="32" role="img" aria-label="Hamkorbank">
+                        <use href="/images/logo_horizontal.svg"></use>
+                    </svg> </a>
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"></ul>
+
+                
+                <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="/images/lang_icon_eng.svg" alt="mdo" width="32" height="32" class="rounded-circle"> </a>
+                    <ul class="dropdown-menu text-small">
+                        <li><a class="dropdown-item" href="/ru.html">Русский</a></li>
+                        <li><a class="dropdown-item" href="#">O'zbek tili</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!--    ***********************
+            ***** HERO SECTION ****
+            *********************** -->
+    <div class="container px-4 pt-5 my-5 text-center border-bottom">
+        <div class="initial-hidden" id="hero-content">
+            <h1 class="display-4 fw-bold text-body-emphasis">Welcome to our bank!</h1>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">We’re thrilled to have you join our family. At Hamkorbank, we believe that our greatest strength lies in the people who make up our team. Every day,
+                    we come together with a shared commitment to integrity, innovation, and service excellence — values that have helped us build a strong foundation and a bright future.
+                </p>
+            </div>
+
+            <div class="overflow-hidden" style="max-height: 30vh;">
+                <div class="container px-5">
+                    <img src="/images/hero_img.jpg" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Hero Main Image of Hamkorbank JSCB" width="1000" height="500" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="container px-4 py-5 scroll-animation" id="custom-cards">
+        <h2 class="pb-2 border-bottom">What to do First</h2>
+        <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
+
+            <div class="col colhover">
+                <a href="https://www.youtube.com/watch?v=ROTx9DYn9DY" target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_vid.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Video about Uzbekistan</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto">
+                                <img src="/images/mini_icons_youtube.svg" alt="YouTube Icon" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>YouTube</small>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>UZB</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+
+            <div class="col colhover">
+                <a href="/Hamkorbank Info.pptx" download target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_ppt.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Presentation about our bank</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto">
+                                <img src="/images/mini_icons_pptx.svg" alt="PowerPoint" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>PowerPoint</small>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>PPTX</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+
+            <div class="col colhover">
+                <a href="https://hamkorbank.uz/" target="_blank" style="text-decoration: none;">
+                <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('/images/elements_bg_web.png');">
+                    <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                        <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Visit our Website</h3>
+                        <ul class="d-flex list-unstyled mt-auto">
+                            <li class="me-auto"> <img src="/images/mini_icons_web.svg" alt="Web Icon" width="32" height="32" class="rounded-circle border border-white">
+                            </li>
+                            <li class="d-flex align-items-center me-3"> <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Location">
+                                    <use xlink:href="#geo-fill"></use>
+                                </svg> <small>Hamkorbank</small>
+                            </li>
+                            <li class="d-flex align-items-center"> <svg class="bi me-2" width="1em" height="1em" role="img" aria-label="Duration">
+                                    <use xlink:href="#calendar3"></use>
+                                </svg> <small>Web</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="container px-4 py-5 scroll-animation" id="featured-3">
+        <h2 class="pb-2 border-bottom">Upon arrival</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_pass.png" style="width: 2em;">
+                </div>
+                <h3 class="fs-2 text-body-emphasis">VISA</h3>
+                <p>Countries for citizens of which a visa-free regime is established in the Republic of Uzbekistan can be found via link (the list is in the end). PCR Test, Antigen Test Certificate and Vaccination Certificate are not required.</p>
+                <a href="https://lex.uz/mact/513096" target="_blank" class="icon-link">See the list of countries<svg class="bi" aria-hidden="true">
+                    <use xlink:href="#chevron-right"></use>
+                </svg> </a> 
+            </div>
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_reg.png" style="width: 2em;">
+                </div>
+                <h3 class="fs-2 text-body-emphasis">Registration</h3>
+                <p>Foreign nationals must register within 15 days of arrival in Uzbekistan.
+                    Hotels: Registration is typically done automatically at check-in. Confirm with the receptionist.
+                    Apartments: Ask your landlord, realtor, or adaptation specialist for help. Registration is done at the local passport office or police station based on the property owner's address.
+                    Keep your registration document — it may be required when leaving the country. Temporary registration is usually valid for six months and can be extended.
+                </p>
+            </div>
+
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                    <img src="/images/arrival_icons_imp.png" style="width: 2em;">
+                </div>
+                    <h3 class="fs-2 text-body-emphasis">Important!</h3>
+                    <p>If you move from a hotel to a rented apartment, you must register on the same day you check out of the hotel to avoid an administrative fine.
+                        Be sure to collect your registration form from the hotel and submit it, along with the completed questionnaire, at the passport office.
+                        The same procedure applies when registering upon initial arrival.
+                    </p>
+                </div>
+            </div>
+
+            <div class="feature col">
+                    <h3 class="fs-2 text-body-emphasis">Mobile Network</h3>
+                    <p>We issue a SIM card on the first working day. Just remind the adaptation specialist about this and bring your phone with IMEI. The SIM card will be needed to obtain a PINFL and open a bank card.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PINFL -->
+        <div class="container col-xxl-8 px-4 py-5 border-top border-bottom scroll-animation">
+            <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+                <div class="col-10 col-sm-8 col-lg-6">
+                    <img src="/images/pinfl_image.jpg" class="d-block mx-lg-auto img-fluid rounded" alt="ID Illustration Image" width="700" height="500" loading="lazy">
+                </div>
+                <div class="col-lg-6">
+                    <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Personal Identification (PINFL) in Uzbekistan</h1>
+                    <p class="lead">Your adaptation specialist will assist you in obtaining your PINFL (Personal Identification Number of an Individual). Here is a brief overview of the process:
+                        To be registered with an Uzbek company, you are required to have a PINFL. This unique identifier is used to verify your identity across various services, including government, banking, and social services.
+                        Important: When receiving your PINFL, carefully check that your personal details — such as your full name and date of birth — are entered correctly.
+                        As part of the process, you will be photographed and fingerprinted. You will also be informed when your PINFL is ready for collection.
+                        Processing time typically ranges from 15–20 minutes to one business day, depending on system availability.
+                    </p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                        <a href="https://oldmy.gov.uz/en/pages/pini-foreign-persons?new=0" target="_blank" style="text-decoration: none;"><button type="button" class="btn btn-success btn-lg px-4 me-md-2">Info about PINFL</button></a>
+                        <a href="https://my.gov.uz/en/for-foreigners" target="_blank" style="text-decoration: none;"><button type="button" class="btn btn-outline-secondary btn-lg px-4">Visit MyGov.uz</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMEI -->
+        <div class="px-4 py-5 my-5 text-center scroll-animation">
+            <img class="d-block mx-auto mb-4" src="/images/logo_uzimei_lat_black.svg" alt="UZ IMEI Logo" width="250" height="auto">
+            <h3 class="fw-bold text-body-emphasis">Registration of Mobile Device's IMEI</h3>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-4">Foreigners visiting Uzbekistan who want to use a local SIM card must register the IMEI code of their mobile device.
+                    This is part of the national system (UZIMEI) to prevent phone theft and ensure proper use of the mobile network.
+                    If you use a foreign SIM (roaming), registration is not required for up to 60 days. However, once you insert a local SIM,
+                    the phone must be registered, or it will be blocked from the network after a short grace period.
+                </p>
+                <br>
+                <h4 class="text-start">How to Register IMEI (For Foreigners)</h4>
+                <div class="text-start lead mb-4">
+                    <p><strong>1. Declare your phone at customs when entering Uzbekistan (especially if new or over customs value limits).</strong></p>
+                    <p><strong>2. Register your device via one of the following:</strong></p>
+                    <ul>
+                        <li>Online: <a class="link-opacity-50-hover link-offset-2 link-underline link-underline-opacity-25" href="https://uzimei.uz/en">uzimei.uz,</a> <a class="link-opacity-50-hover link-offset-2 link-underline link-underline-opacity-25" href="https://my.gov.uz/en/for-foreigners">my.gov.uz,</a> Birda app</li>
+                        <li>In-person: Tashkent Airport desk, post offices, UZIMEI centers</li>
+                        <li>USSD/SMS: Dial <em>*1170#</em> or SMS to 1170</li>
+                    </ul>
+                    <p><strong>3. Pay the registration fee:</strong></p>
+                    <ul>
+                        <li>Within 30 days: <em>~82,400 UZS</em></li>
+                        <li>After 30 days: <em>~103,000 UZS</em></li>
+                    </ul>
+                    <p><strong>4. Complete biometric verification if required.</strong></p>
+                    <p><strong>5. Payment deadline: Within 10 days after applying.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARDS -->
+        <div class="container my-5 scroll-animation">
+            <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+                <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+                    <h1 class="display-4 fw-bold lh-1 text-body-emphasis">Bank Cards</h1>
+                    <br>
+                    <p class="lead">In Uzbekistan, both local bank cards (Uzcard, Humo) and international cards (Visa, Mastercard) are available.
+
+                        <br>When joining our company, we assist with opening a salary account at Hamkorbank. This includes a local currency (UZS) salary card (Uzcard or Humo), and if needed, 
+                        a Visa card in foreign currency (USD or EUR). To open these accounts, you will need the following:</p>
+                            <ul class="lead">
+                                <li>A valid foreign passport</li>
+                                <li>Temporary registration in Uzbekistan</li>
+                                <li>A local phone number</li>
+                            </ul>
+                            <p class="lead">You can find preliminary information about Hamkorbank’s plastic cards in the attached file.</p>
+
+                            <p class="lead"><strong>ATM Access</p></strong>
+
+                            <p class="lead">ATMs in cities such as Tashkent and Andijan are commonly located in high-traffic areas, including supermarkets, gas stations, and commercial centers.</p>
+
+                            <p class="lead">Please note the following:</p>
+
+                            <ul class="lead">
+                                <li>Not all ATMs accept every type of card. Follow the instructions displayed on the ATM screen.</li>
+                                <li>Withdrawal fees may apply depending on your card type and issuing bank.</li>
+                            </ul>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                            <a href="/International Debit Cards.docx" download style="text-decoration: none;"><button type="button" class="btn btn-success btn-lg px-4 me-md-2 fw-bold">Download Full Info</button></a>
+                        </div>
+                    </div>
+                    <div style="filter: drop-shadow(0 0 1.2rem #7777777e);" class="col-lg-4 offset-lg-1 p-0 overflow-hidden">
+                        <img class="rounded-4" src="/images/6819965.jpg" alt="UzCard Debit Card" width="520">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last FEATURES -->
+             <div class="container px-4 py-5 scroll-animation" id="hanging-icons">
+                <h2 class="pb-2 border-bottom">Facilities</h2>
+                <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-17.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">Where to look for housing</h3>
+                            <p>HR will help with this</p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-18.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">Using medical services.</h3>
+                            <p>If you need medical services, you can contact a bank doctor and get advice, or you can contact a clinic at your place of residence yourself.
+                            You can get detailed information on the procedure for providing medical services to foreign citizens in the Republic of Uzbekistan from the file below.</p>
+                            <a href="/Medical Service.docx" download class="btn btn-success">Download file</a>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <img src="/images/facilities_icons-19.svg" style="width: 3em;">
+                        <div style="margin-left: 1em;">
+                            <h3 class="fs-2 text-body-emphasis">For how long can foreigners import their cars to Uzbekistan?</h3>
+                            <p>Foreign citizens can enter Uzbekistan in their own car without paying duties and taxes for up to 90 days during one calendar year. 
+                                However, it can only be used for non-commercial purposes. After the 90-day period, the car must be exported from the country.</p>
+                            <button id="openModalBtn" type="button" class="btn btn-success">More Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Modal -->
+            <div id="modal" class="modal-overlay hidden">
+                <!-- Modal content -->
+                <div id="modal-content" class="modal-content">
+                    <div class="modal-header">
+                        <!-- Close button -->
+                        <button id="closeModalBtn">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="icon-container">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <h3>Bringing a Foreign Vehicle into Uzbekistan</h3>
+                        <p>
+                            Foreign nationals are allowed to bring their personal vehicles into Uzbekistan without paying duties or taxes for a period of up to 90 days within a single calendar year. Please note that the vehicle may only be used for non-commercial purposes during this time.<br>
+
+                            <br><strong>Extension Beyond 90 Days</strong>
+
+                            <br>If you wish to keep your vehicle in Uzbekistan beyond the 90-day limit, you must apply for an extension. A daily fee is charged for this extension, calculated as follows:
+
+                            <br>0.7% of the Basic Calculation Value (BCV) per horsepower of the vehicle per day.<br>
+
+                            <br>As of the current rate, the BCV is 330,000 UZS.
+                            <br>For example:
+
+                            <br>A car with 100 horsepower would incur a fee of:
+
+                            <br>231,000 UZS per day
+
+                            <br>6,930,000 UZS for 30 days (approximately $560 USD)<br>
+
+                            <br><strong>Fee Calculation Formula:</strong>
+                            <br>Extension Fee = BCV × 0.7% × Vehicle Horsepower × Number of Days<br>
+
+
+                            <br><strong>Car Rental Option</strong>
+
+                            <br>If you prefer not to bring your own vehicle, you can rent a car locally. Rental costs vary depending on the car type and rental company, but average between $400 to $1,000 per month.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeModalFooterBtn">
+                            Got it, thanks!
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate hero section on page load
+            const heroContent = document.getElementById('hero-content');
+            setTimeout(() => {
+                heroContent.classList.add('visible');
+            }, 100); // Small delay to ensure transition is applied
+
+            // Intersection Observer for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // No need to unobserve, let it stay animated
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the element is visible
+            });
+
+            // Target all elements with the .scroll-animation class
+            const scrollElements = document.querySelectorAll('.scroll-animation');
+            scrollElements.forEach(el => {
+                el.classList.add('scroll-hidden');
+                observer.observe(el);
+            });
+        });
+
+
+        // Get the necessary elements from the DOM
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeModalFooterBtn = document.getElementById('closeModalFooterBtn');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+
+        // Function to open the modal with animation
+        const openModal = () => {
+            modal.classList.remove('hidden');
+            // We use a timeout to allow the browser to render the modal first, then apply the animation class
+            setTimeout(() => {
+                modalContent.classList.add('open');
+            }, 10); // A small delay is enough
+        };
+
+        // Function to close the modal with animation
+        const closeModal = () => {
+            modalContent.classList.remove('open');
+             // Wait for the animation to finish before hiding the modal
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200); // Should match the transition duration in CSS
+        };
+        
+        // --- Event Listeners ---
+
+        // Open the modal when the main button is clicked
+        openModalBtn.addEventListener('click', openModal);
+
+        // Close the modal when the 'X' button is clicked
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Close the modal when the footer button is clicked
+        closeModalFooterBtn.addEventListener('click', closeModal);
+
+        // Close the modal if the user clicks on the background overlay
+        modal.addEventListener('click', (event) => {
+            // Check if the click was on the modal backdrop itself and not the content
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close the modal if the user presses the 'Escape' key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+
+
+<footer class="border-top">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center my-4">
+        <div class="col-md-4 d-flex align-items-center">
+            <a href="https://hamkorbank.uz/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" aria-label="Hamkorbank">
+                <svg class="bi" width="32" height="32" aria-hidden="true"><use href="/images/hb_logo_gray.svg"></use></svg>
+            </a>
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2025 Hamkorbank JSCB</span>
+        </div>
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="text-body-secondary" href="https://www.instagram.com/hamkorbank.uz/" aria-label="Instagram"><svg class="bi" width="32" height="32" aria-hidden="true"><use href="/images/social_inst.svg"></use></svg></a></li>
+            <li class="ms-3"><a class="text-body-secondary" href="https://www.facebook.com/Hamkorbank.uz/" aria-label="Facebook"><svg class="bi" width="32" height="32"><use href="/images/social_fb.svg"></use></svg></a></li>
+        </ul>
+    </div>
+</footer>
+
+</html>
